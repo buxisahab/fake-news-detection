@@ -23,6 +23,11 @@ app.post('/analyze', async (req, res) => {
         return res.status(400).json({ error: 'News content is required' });
     }
 
+    if (!process.env.GEMINI_API_KEY) {
+        console.error('GEMINI_API_KEY is missing from environment variables');
+        return res.status(500).json({ error: 'Server configuration error: Missing API Key' });
+    }
+
     try {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
