@@ -98,10 +98,10 @@ function App() {
       <nav className="nav">
         <div className="logo">
           <div className="logo-icon"><Newspaper size={20} color="white" /></div>
-          <span>Fake News <span style={{color: '#818cf8'}}>Detection</span></span>
+          <span>Buxi.Ai <span style={{color: '#818cf8'}}>Detection</span></span>
         </div>
         <div className="nav-info" style={{display: 'flex', gap: '20px', fontSize: '0.9rem', color: '#94a3b8'}}>
-           <span style={{display: 'flex', alignItems: 'center', gap: '6px'}}><Sparkles size={14} /> Gemini 1.5 Flash</span>
+           <span style={{display: 'flex', alignItems: 'center', gap: '6px'}}><Sparkles size={14} /> Buxi.Ai Detection</span>
         </div>
       </nav>
 
