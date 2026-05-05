@@ -50,7 +50,10 @@ function App() {
     setResult(null);
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      // Strip trailing slash if present
+      apiUrl = apiUrl.replace(/\/$/, '');
+      
       console.log('Using API URL:', apiUrl);
       const response = await fetch(`${apiUrl}/analyze`, {
         method: 'POST',
