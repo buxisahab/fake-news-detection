@@ -17,6 +17,7 @@ app.use(bodyParser.json());
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 app.post('/analyze', async (req, res) => {
+    console.log('--- New Analysis Request Received ---');
     const { news } = req.body;
 
     if (!news || news.trim() === '') {
