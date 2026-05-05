@@ -31,7 +31,7 @@ app.post('/analyze', async (req, res) => {
 
     try {
         // Using 'gemini-2.0-flash' as verified by local model listing
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
         const prompt = `Analyze the following news content and determine whether it is likely Real, Fake, or Suspicious.
 
@@ -67,8 +67,12 @@ News: ${news}`;
             });
         }
     } catch (error) {
-        console.error('Gemini API Error:', error);
-        res.status(500).json({ error: 'Failed to analyze news content' });
+        console.error('CRITICAL Gemini API Error:', error);
+        res.status(500).json({ 
+            error: 'AI Analysis Failed', 
+            details: error.message,
+            status: error.status 
+        });
     }
 });
 
