@@ -31,7 +31,7 @@ app.post('/analyze', async (req, res) => {
 
     try {
         // Using 'gemini-2.0-flash' as verified by local model listing
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `Analyze the following news content and determine whether it is likely Real, Fake, or Suspicious.
 
