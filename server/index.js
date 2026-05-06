@@ -55,11 +55,12 @@ app.post('/analyze', async (req, res) => {
         const keyObj = getAvailableInstance();
         
         if (!keyObj) {
-            return res.status(429).json({ error: 'All API keys are currently rate-limited. Please try again in 60 seconds.' });
+            console.error('All keys are currently banned/rate-limited');
+            return res.status(429).json({ error: 'All AI nodes are busy. Please retry in 60 seconds.' });
         }
 
         try {
-            console.log(`Using Key: ${keyObj.shortKey} (Attempt ${attempts + 1}/${maxAttempts})`);
+            console.log(`Using Node: ${keyObj.shortKey} (Attempt ${attempts + 1}/${maxAttempts})`);
             const model = keyObj.instance.getGenerativeModel({ model: "gemini-flash-latest" });
 
             const prompt = `Analyze the following news content and determine whether it is likely Real, Fake, or Suspicious.
@@ -82,16 +83,16 @@ News: ${news}`;
             text = text.replace(/```json/g, '').replace(/```/g, '').trim();
             const jsonResponse = JSON.parse(text);
             
-            console.log(`Successfully analyzed using Key: ${keyObj.shortKey}`);
+            console.log(`Successfully analyzed using Node: ${keyObj.shortKey}`);
             return res.json(jsonResponse);
 
         } catch (error) {
-            const status = error.status || 0;
-            console.error(`Error with Key ${keyObj.shortKey}:`, error.message);
+            const status = error.status || (error.response ? error.response.status : 0);
+            console.error(`Node ${keyObj.shortKey} failed with status ${status}:`, error.message);
 
-            // If Rate Limited (429) or Server Error (500/503), ban key for 60 seconds and try next
-            if (status === 429 || status === 503 || status === 500) {
-                console.warn(`Key ${keyObj.shortKey} rate-limited. Banning for 60s.`);
+            // If Rate Limited (429) or Server Error (500/503), ban node for 60 seconds and try next
+            if (status === 429 || status === 503 || status === 500 || error.message.includes('quota')) {
+                console.warn(`Node ${keyObj.shortKey} temporarily disabled due to quota/server error.`);
                 keyObj.bannedUntil = Date.now() + 60000;
                 attempts++;
                 continue; 
@@ -99,8 +100,9 @@ News: ${news}`;
 
             // For other critical errors, return immediately
             return res.status(500).json({ 
-                error: 'AI Analysis Failed', 
-                details: error.message 
+                error: 'Buxi.Ai Analysis Error', 
+                message: error.message,
+                node: keyObj.shortKey
             });
         }
     }
